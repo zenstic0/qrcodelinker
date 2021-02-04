@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <title>QR Code Linker</title>
+    <body>
+
+        <div id="qr-reader" style="width:100%"></div>
+        <div id="qr-reader-results"> </div>
+
+    </body>
+    
+    <script src="html5-qrcode.min.js"></script>
+    <script>
+        function docReady(fn) {
+            // see if DOM is already available
+            if (document.readyState === "complete"
+                || document.readyState === "interactive") {
+                // call on next available tick
+                setTimeout(fn, 1);
+            } else {
+                document.addEventListener("DOMContentLoaded", fn);
+            }
+        }
+    
+        docReady(function () {
+            var resultContainer = document.getElementById('qr-reader-results');
+            var lastResult, countResults = 0;
+            function onScanSuccess(qrCodeMessage) {
+                if (qrCodeMessage !== lastResult) {
+                    ++countResults;
+                    lastResult = qrCodeMessage;
+                                        
+                    resultContainer.innerHTML
+                        //+= `<div>[${countResults}] - <a href="${qrCodeMessage}">${qrCodeMessage}</a>]</div>`;
+                            // This is the normal look of the site while formatting qrCodeMessage as a Link
+                        //+= `<div> <h1> <a href="${qrCodeMessage}">"Scanned Link ${countResults}"</a>] </h1> </div>`
+                            //This is a customized link formatted as 'qrCodeMessage + counter as a link'
+                        += window.location.replace(qrCodeMessage);
+                            //This opens the first successful qrCodeMessage in another tab as the URL
+
+                    }
+                
+                }
+    
+            var html5QrcodeScanner = new Html5QrcodeScanner(
+                "qr-reader", { fps: 10, qrbox: 600 });
+            html5QrcodeScanner.render(onScanSuccess);
+        });
+    </script>
+
+    </head>
+</html>
